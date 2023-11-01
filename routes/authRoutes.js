@@ -96,12 +96,10 @@ router.put("/update-password", jwtAuth, async (request, response) => {
     );
 
     if (comparePasswordOld) {
-      return response
-        .status(400)
-        .json({
-          message:
-            "New Password is same as Old Password, Please enter different one",
-        });
+      return response.status(400).json({
+        message:
+          "New Password is same as Old Password, Please enter different one",
+      });
     } else {
       const hashedPassword = await bcrypt.hash(password, 10);
       await hospitalUserData.updateOne(
