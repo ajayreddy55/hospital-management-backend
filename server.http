@@ -1,0 +1,41 @@
+POST http://localhost:5000/auth/login
+Content-Type: application/json
+
+{
+    "email": "ajay1234@gmail.com",
+    "password": "ajay123"
+}
+
+###
+POST http://localhost:5000/auth/signup
+Content-Type: application/json
+
+{
+    "email": "ajay123@gmail.com",
+    "name": "Ajay",
+    "password": "ajay123"
+}
+
+###
+GET http://localhost:5000/auth/profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDIyYzQ2NWI3ZTc5NzRkNzYxYWM3ZiIsImlhdCI6MTY5ODgzNzU2MywiZXhwIjoxNjk4OTIzOTYzfQ.WaqhnKTU_54J2RCF4zlhTPADYb4y7al47u2cCjAig8E
+
+###
+PUT http://localhost:5000/auth/update-details
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDIyYzQ2NWI3ZTc5NzRkNzYxYWM3ZiIsImlhdCI6MTY5ODgzNzU2MywiZXhwIjoxNjk4OTIzOTYzfQ.WaqhnKTU_54J2RCF4zlhTPADYb4y7al47u2cCjAig8E
+
+{
+    "name": "Ajay",
+    "email": "ajay1234@gmail.com"
+}
+
+###
+PUT http://localhost:5000/auth/update-password
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1NDIyYzQ2NWI3ZTc5NzRkNzYxYWM3ZiIsImlhdCI6MTY5ODgzNzU2MywiZXhwIjoxNjk4OTIzOTYzfQ.WaqhnKTU_54J2RCF4zlhTPADYb4y7al47u2cCjAig8E
+
+{
+    "password": "ajay1234"
+}
+
