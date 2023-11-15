@@ -1,7 +1,5 @@
 #dependencies
 /node_modules
 
-#files
-server.http
 
 

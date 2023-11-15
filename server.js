@@ -17,6 +17,7 @@ mongoose
   .catch((error) => console.log(error));
 
 app.use("/auth", require("./routes/authRoutes"));
+app.use("/api", require("./routes/apiRoutes"));
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
