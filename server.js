@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+// const multer = require("multer");
 
 const app = express();
 
@@ -18,6 +19,22 @@ mongoose
 
 app.use("/auth", require("./routes/authRoutes"));
 app.use("/api", require("./routes/apiRoutes"));
+
+// const storage = multer.diskStorage({
+//   destination: function (request, file, cb) {
+//     return cb(null, "./public/images");
+//   },
+//   filename: function (request, file, cb) {
+//     return cb(null, `${Date.now()}_${file.originalname}`);
+//   },
+// });
+
+// const uploadFile = multer({ storage });
+
+// app.post("/upload/images", uploadFile.single("file"), (request, response) => {
+//   console.log(request.body);
+//   console.log(request.file);
+// });
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
