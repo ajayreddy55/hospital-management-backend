@@ -117,7 +117,7 @@ router.delete("/delete-department/:id", jwtAuth, async (request, response) => {
   }
 });
 
-//getting-department facility
+//getting-department facilities
 router.get(
   "/get-department-facilities/:id",
   jwtAuth,
