@@ -9,6 +9,7 @@ const {
 } = require("../database-models/departmentData");
 const doctorsDataModel = require("../database-models/doctorsData");
 const patientsDataModel = require("../database-models/patientsData");
+const nurseDataModel = require("../database-models/nurseData");
 
 const router = express.Router();
 
@@ -522,6 +523,100 @@ router.delete("/delete-patient/:id", jwtAuth, async (request, response) => {
       return response
         .status(400)
         .json({ message: "Patient Details Not Found" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//getting all nurses
+router.get("/get-all-nurses", jwtAuth, async (request, response) => {
+  try {
+    const nursesRes = await nurseDataModel.find();
+
+    return response.status(200).json({ nurses: nursesRes });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//adding nurses
+router.post("/adding-nurse", jwtAuth, async (request, response) => {
+  try {
+    const { name, email, password, address, phoneNumber, profileImage } =
+      request.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const nurse = new nurseDataModel({
+      name,
+      email,
+      password: hashedPassword,
+      address,
+      phoneNumber,
+      profileImage,
+    });
+
+    await nurse.save();
+
+    return response
+      .status(200)
+      .json({ message: "Nurse Details Saved Successfully" });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//updating nurse
+router.put("/modify-nurse/:id", jwtAuth, async (request, response) => {
+  try {
+    const { id } = request.params;
+    const { name, email, address, phoneNumber, profileImage } = request.body;
+
+    const nurseRes = await nurseDataModel.findOne({ _id: id });
+
+    if (nurseRes !== null) {
+      const update = await nurseDataModel.updateOne(
+        { _id: id },
+        {
+          $set: {
+            name: name,
+            email: email,
+            address: address,
+            phoneNumber: phoneNumber,
+            profileImage: profileImage,
+          },
+        }
+      );
+
+      return response
+        .status(200)
+        .json({ message: "Nurse Details Updated Successfully" });
+    } else {
+      return response.status(400).json({ message: "Nurse Not Found" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//delete nurse
+router.delete("/delete-nurse/:id", jwtAuth, async (request, response) => {
+  try {
+    const { id } = request.params;
+    const nurseRes = await nurseDataModel.findOne({ _id: id });
+
+    if (nurseRes !== null) {
+      const deleteRes = await nurseDataModel.deleteOne({ _id: id });
+      return response
+        .status(200)
+        .json({ message: "Nurse Details Deleted Successfully" });
+    } else {
+      return response.status(400).json({ message: "Nurse Details Not Found" });
     }
   } catch (error) {
     console.log(error.message);
