@@ -10,6 +10,10 @@ const {
 const doctorsDataModel = require("../database-models/doctorsData");
 const patientsDataModel = require("../database-models/patientsData");
 const nurseDataModel = require("../database-models/nurseData");
+const pharmacistDataModel = require("../database-models/pharmacistData");
+const laboratoristDataModel = require("../database-models/laboratoristData");
+const accountantDataModel = require("../database-models/accountantData");
+const receptionistDataModel = require("../database-models/receptionist");
 
 const router = express.Router();
 
@@ -623,5 +627,397 @@ router.delete("/delete-nurse/:id", jwtAuth, async (request, response) => {
     return response.status(500).json({ message: error.message });
   }
 });
+
+//getting all pharmacists
+router.get("/get-all-pharmacists", jwtAuth, async (request, response) => {
+  try {
+    const pharmacistsRes = await pharmacistDataModel.find();
+
+    return response.status(200).json({ pharmacists: pharmacistsRes });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//adding pharmacists
+router.post("/adding-pharmacist", jwtAuth, async (request, response) => {
+  try {
+    const { name, email, password, address, phoneNumber, profileImage } =
+      request.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const pharmacist = new pharmacistDataModel({
+      name,
+      email,
+      password: hashedPassword,
+      address,
+      phoneNumber,
+      profileImage,
+    });
+
+    await pharmacist.save();
+
+    return response
+      .status(200)
+      .json({ message: "Pharmacist Details Saved Successfully" });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//updating pharmacist
+router.put("/modify-pharmacist/:id", jwtAuth, async (request, response) => {
+  try {
+    const { id } = request.params;
+    const { name, email, address, phoneNumber, profileImage } = request.body;
+
+    const pharmacistRes = await pharmacistDataModel.findOne({ _id: id });
+
+    if (pharmacistRes !== null) {
+      const update = await pharmacistDataModel.updateOne(
+        { _id: id },
+        {
+          $set: {
+            name: name,
+            email: email,
+            address: address,
+            phoneNumber: phoneNumber,
+            profileImage: profileImage,
+          },
+        }
+      );
+
+      return response
+        .status(200)
+        .json({ message: "Pharmacist Details Updated Successfully" });
+    } else {
+      return response.status(400).json({ message: "Pharmacist Not Found" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//delete pharmacist
+router.delete("/delete-pharmacist/:id", jwtAuth, async (request, response) => {
+  try {
+    const { id } = request.params;
+    const pharmacistRes = await pharmacistDataModel.findOne({ _id: id });
+
+    if (pharmacistRes !== null) {
+      const deleteRes = await pharmacistDataModel.deleteOne({ _id: id });
+      return response
+        .status(200)
+        .json({ message: "Pharmacist Details Deleted Successfully" });
+    } else {
+      return response
+        .status(400)
+        .json({ message: "Pharmacist Details Not Found" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//getting all laboratorists
+router.get("/get-all-laboratorists", jwtAuth, async (request, response) => {
+  try {
+    const laboratoristsRes = await laboratoristDataModel.find();
+
+    return response.status(200).json({ laboratorists: laboratoristsRes });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//adding laboratorists
+router.post("/adding-laboratorist", jwtAuth, async (request, response) => {
+  try {
+    const { name, email, password, address, phoneNumber, profileImage } =
+      request.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const laboratorist = new laboratoristDataModel({
+      name,
+      email,
+      password: hashedPassword,
+      address,
+      phoneNumber,
+      profileImage,
+    });
+
+    await laboratorist.save();
+
+    return response
+      .status(200)
+      .json({ message: "Laboratorist Details Saved Successfully" });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//updating laboratorist
+router.put("/modify-laboratorist/:id", jwtAuth, async (request, response) => {
+  try {
+    const { id } = request.params;
+    const { name, email, address, phoneNumber, profileImage } = request.body;
+
+    const laboratoristRes = await laboratoristDataModel.findOne({ _id: id });
+
+    if (laboratoristRes !== null) {
+      const update = await laboratoristDataModel.updateOne(
+        { _id: id },
+        {
+          $set: {
+            name: name,
+            email: email,
+            address: address,
+            phoneNumber: phoneNumber,
+            profileImage: profileImage,
+          },
+        }
+      );
+
+      return response
+        .status(200)
+        .json({ message: "Laboratorist Details Updated Successfully" });
+    } else {
+      return response.status(400).json({ message: "Laboratorist Not Found" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//delete laboratorist
+router.delete(
+  "/delete-laboratorist/:id",
+  jwtAuth,
+  async (request, response) => {
+    try {
+      const { id } = request.params;
+      const laboratoristRes = await laboratoristDataModel.findOne({ _id: id });
+
+      if (laboratoristRes !== null) {
+        const deleteRes = await laboratoristDataModel.deleteOne({ _id: id });
+        return response
+          .status(200)
+          .json({ message: "Laboratorist Details Deleted Successfully" });
+      } else {
+        return response
+          .status(400)
+          .json({ message: "Laboratorist Details Not Found" });
+      }
+    } catch (error) {
+      console.log(error.message);
+      return response.status(500).json({ message: error.message });
+    }
+  }
+);
+
+//getting all accountants
+router.get("/get-all-accountants", jwtAuth, async (request, response) => {
+  try {
+    const accountantsRes = await accountantDataModel.find();
+
+    return response.status(200).json({ accountants: accountantsRes });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//adding accountant
+router.post("/adding-accountant", jwtAuth, async (request, response) => {
+  try {
+    const { name, email, password, address, phoneNumber, profileImage } =
+      request.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const accountant = new accountantDataModel({
+      name,
+      email,
+      password: hashedPassword,
+      address,
+      phoneNumber,
+      profileImage,
+    });
+
+    await accountant.save();
+
+    return response
+      .status(200)
+      .json({ message: "Accountant Details Saved Successfully" });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//updating accountant
+router.put("/modify-accountant/:id", jwtAuth, async (request, response) => {
+  try {
+    const { id } = request.params;
+    const { name, email, address, phoneNumber, profileImage } = request.body;
+
+    const accountantRes = await accountantDataModel.findOne({ _id: id });
+
+    if (accountantRes !== null) {
+      const update = await accountantDataModel.updateOne(
+        { _id: id },
+        {
+          $set: {
+            name: name,
+            email: email,
+            address: address,
+            phoneNumber: phoneNumber,
+            profileImage: profileImage,
+          },
+        }
+      );
+
+      return response
+        .status(200)
+        .json({ message: "Accountant Details Updated Successfully" });
+    } else {
+      return response.status(400).json({ message: "Accountant Not Found" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//delete accountant
+router.delete("/delete-accountant/:id", jwtAuth, async (request, response) => {
+  try {
+    const { id } = request.params;
+    const accountantRes = await accountantDataModel.findOne({ _id: id });
+
+    if (accountantRes !== null) {
+      const deleteRes = await accountantDataModel.deleteOne({ _id: id });
+      return response
+        .status(200)
+        .json({ message: "Accountant Details Deleted Successfully" });
+    } else {
+      return response
+        .status(400)
+        .json({ message: "Accountant Details Not Found" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//getting all receptionists
+router.get("/get-all-receptionists", jwtAuth, async (request, response) => {
+  try {
+    const receptionistsRes = await receptionistDataModel.find();
+
+    return response.status(200).json({ receptionists: receptionistsRes });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//adding receptionist
+router.post("/adding-receptionist", jwtAuth, async (request, response) => {
+  try {
+    const { name, email, password, address, phoneNumber, profileImage } =
+      request.body;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const receptionist = new receptionistDataModel({
+      name,
+      email,
+      password: hashedPassword,
+      address,
+      phoneNumber,
+      profileImage,
+    });
+
+    await receptionist.save();
+
+    return response
+      .status(200)
+      .json({ message: "Receptionist Details Saved Successfully" });
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//updating receptionist
+router.put("/modify-receptionist/:id", jwtAuth, async (request, response) => {
+  try {
+    const { id } = request.params;
+    const { name, email, address, phoneNumber, profileImage } = request.body;
+
+    const receptionistRes = await receptionistDataModel.findOne({ _id: id });
+
+    if (receptionistRes !== null) {
+      const update = await receptionistDataModel.updateOne(
+        { _id: id },
+        {
+          $set: {
+            name: name,
+            email: email,
+            address: address,
+            phoneNumber: phoneNumber,
+            profileImage: profileImage,
+          },
+        }
+      );
+
+      return response
+        .status(200)
+        .json({ message: "Receptionist Details Updated Successfully" });
+    } else {
+      return response.status(400).json({ message: "Receptionist Not Found" });
+    }
+  } catch (error) {
+    console.log(error.message);
+    return response.status(500).json({ message: error.message });
+  }
+});
+
+//delete receptionist
+router.delete(
+  "/delete-receptionist/:id",
+  jwtAuth,
+  async (request, response) => {
+    try {
+      const { id } = request.params;
+      const receptionistRes = await receptionistDataModel.findOne({ _id: id });
+
+      if (receptionistRes !== null) {
+        const deleteRes = await receptionistDataModel.deleteOne({ _id: id });
+        return response
+          .status(200)
+          .json({ message: "Receptionist Details Deleted Successfully" });
+      } else {
+        return response
+          .status(400)
+          .json({ message: "Receptionist Details Not Found" });
+      }
+    } catch (error) {
+      console.log(error.message);
+      return response.status(500).json({ message: error.message });
+    }
+  }
+);
 
 module.exports = router;
