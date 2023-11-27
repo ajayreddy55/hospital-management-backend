@@ -72,13 +72,23 @@ router.get("/profile", jwtAuth, async (request, response) => {
 router.put("/update-details", jwtAuth, async (request, response) => {
   try {
     const { name, email } = request.body;
-    const userDetails = await hospitalUserData.updateOne(
-      { _id: request.userId },
-      { $set: { name: name, email: email } }
-    );
-    return response
-      .status(200)
-      .json({ message: "User Details Updated Successfully" });
+
+    const isUserExists = await hospitalUserData.findOne({
+      email: email,
+      _id: { $ne: request.userId },
+    });
+
+    if (isUserExists !== null) {
+      return response.status(400).json({ message: "Email Already Exists" });
+    } else {
+      const userDetails = await hospitalUserData.updateOne(
+        { _id: request.userId },
+        { $set: { name: name, email: email } }
+      );
+      return response
+        .status(200)
+        .json({ message: "User Details Updated Successfully" });
+    }
   } catch (error) {
     console.log(error.message);
     return response.status(500).json({ message: "Internal Server Error" });
@@ -87,28 +97,39 @@ router.put("/update-details", jwtAuth, async (request, response) => {
 
 router.put("/update-password", jwtAuth, async (request, response) => {
   try {
-    const { password } = request.body;
+    const { oldPassword, newPassword } = request.body;
     const userDetails = await hospitalUserData.findOne({ _id: request.userId });
 
     const comparePasswordOld = await bcrypt.compare(
-      password,
+      oldPassword,
       userDetails.password
     );
 
     if (comparePasswordOld) {
-      return response.status(400).json({
-        message:
-          "New Password is same as Old Password, Please enter different one",
-      });
-    } else {
-      const hashedPassword = await bcrypt.hash(password, 10);
-      await hospitalUserData.updateOne(
-        { _id: request.userId },
-        { $set: { password: hashedPassword } }
+      const compareNewPassword = await bcrypt.compare(
+        newPassword,
+        userDetails.password
       );
-      return response
-        .status(200)
-        .json({ message: "Password Updated Successfully" });
+
+      if (compareNewPassword) {
+        return response.status(400).json({
+          message:
+            "New Password is same as Old Password, Please enter different one",
+        });
+      } else {
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await hospitalUserData.updateOne(
+          { _id: request.userId },
+          { $set: { password: hashedPassword } }
+        );
+        return response
+          .status(200)
+          .json({ message: "Password Updated Successfully" });
+      }
+    } else {
+      return response.status(400).json({
+        message: "Old Password is incorrect",
+      });
     }
   } catch (error) {
     console.log(error.message);

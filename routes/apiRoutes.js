@@ -20,7 +20,11 @@ const router = express.Router();
 //getting departments
 router.get("/all-departments", jwtAuth, async (request, response) => {
   try {
-    const departmentsRes = await departmentModel.find();
+    const { limit, search } = request.query;
+    const parsingLimit = parseInt(limit);
+    const departmentsRes = await departmentModel
+      .find({ name: { $regex: search, $options: "i" } })
+      .limit(parsingLimit);
 
     return response.status(200).json({ departmentsList: departmentsRes });
   } catch (error) {
@@ -131,10 +135,15 @@ router.get(
   jwtAuth,
   async (request, response) => {
     try {
+      const { limit, search } = request.query;
+      const parsingLimit = parseInt(limit);
       const { id } = request.params;
-      const departmentFacilitiesRes = await departmentFacilityModel.find({
-        departmentId: id,
-      });
+      const departmentFacilitiesRes = await departmentFacilityModel
+        .find({
+          departmentId: id,
+          title: { $regex: search, $options: "i" },
+        })
+        .limit(parsingLimit);
 
       return response
         .status(200)
@@ -249,7 +258,12 @@ router.delete("/delete-facility/:id", jwtAuth, async (request, response) => {
 //getting all doctors
 router.get("/get-all-doctors", jwtAuth, async (request, response) => {
   try {
-    const doctorsRes = await doctorsDataModel.find();
+    const { limit, search } = request.query;
+    const parsingLimit = parseInt(limit);
+
+    const doctorsRes = await doctorsDataModel
+      .find({ name: { $regex: search, $options: "i" } })
+      .limit(parsingLimit);
 
     return response.status(200).json({ doctors: doctorsRes });
   } catch (error) {
@@ -395,7 +409,12 @@ router.delete("/delete-doctor/:id", jwtAuth, async (request, response) => {
 //getting all patients
 router.get("/get-all-patients", jwtAuth, async (request, response) => {
   try {
-    const patientsRes = await patientsDataModel.find();
+    const { limit, search } = request.query;
+    const parsingLimit = parseInt(limit);
+
+    const patientsRes = await patientsDataModel
+      .find({ name: { $regex: search, $options: "i" } })
+      .limit(parsingLimit);
 
     return response.status(200).json({ patients: patientsRes });
   } catch (error) {
@@ -537,7 +556,12 @@ router.delete("/delete-patient/:id", jwtAuth, async (request, response) => {
 //getting all nurses
 router.get("/get-all-nurses", jwtAuth, async (request, response) => {
   try {
-    const nursesRes = await nurseDataModel.find();
+    const { limit, search } = request.query;
+    const parsingLimit = parseInt(limit);
+
+    const nursesRes = await nurseDataModel
+      .find({ name: { $regex: search, $options: "i" } })
+      .limit(parsingLimit);
 
     return response.status(200).json({ nurses: nursesRes });
   } catch (error) {
@@ -631,7 +655,12 @@ router.delete("/delete-nurse/:id", jwtAuth, async (request, response) => {
 //getting all pharmacists
 router.get("/get-all-pharmacists", jwtAuth, async (request, response) => {
   try {
-    const pharmacistsRes = await pharmacistDataModel.find();
+    const { limit, search } = request.query;
+    const parsingLimit = parseInt(limit);
+
+    const pharmacistsRes = await pharmacistDataModel
+      .find({ name: { $regex: search, $options: "i" } })
+      .limit(parsingLimit);
 
     return response.status(200).json({ pharmacists: pharmacistsRes });
   } catch (error) {
@@ -727,7 +756,12 @@ router.delete("/delete-pharmacist/:id", jwtAuth, async (request, response) => {
 //getting all laboratorists
 router.get("/get-all-laboratorists", jwtAuth, async (request, response) => {
   try {
-    const laboratoristsRes = await laboratoristDataModel.find();
+    const { limit, search } = request.query;
+    const parsingLimit = parseInt(limit);
+
+    const laboratoristsRes = await laboratoristDataModel
+      .find({ name: { $regex: search, $options: "i" } })
+      .limit(parsingLimit);
 
     return response.status(200).json({ laboratorists: laboratoristsRes });
   } catch (error) {
@@ -827,7 +861,12 @@ router.delete(
 //getting all accountants
 router.get("/get-all-accountants", jwtAuth, async (request, response) => {
   try {
-    const accountantsRes = await accountantDataModel.find();
+    const { limit, search } = request.query;
+    const parsingLimit = parseInt(limit);
+
+    const accountantsRes = await accountantDataModel
+      .find({ name: { $regex: search, $options: "i" } })
+      .limit(parsingLimit);
 
     return response.status(200).json({ accountants: accountantsRes });
   } catch (error) {
@@ -923,7 +962,12 @@ router.delete("/delete-accountant/:id", jwtAuth, async (request, response) => {
 //getting all receptionists
 router.get("/get-all-receptionists", jwtAuth, async (request, response) => {
   try {
-    const receptionistsRes = await receptionistDataModel.find();
+    const { limit, search } = request.query;
+    const parsingLimit = parseInt(limit);
+
+    const receptionistsRes = await receptionistDataModel
+      .find({ name: { $regex: search, $options: "i" } })
+      .limit(parsingLimit);
 
     return response.status(200).json({ receptionists: receptionistsRes });
   } catch (error) {
