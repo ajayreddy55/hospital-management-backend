@@ -258,11 +258,17 @@ router.delete("/delete-facility/:id", jwtAuth, async (request, response) => {
 //getting all doctors
 router.get("/get-all-doctors", jwtAuth, async (request, response) => {
   try {
-    const { limit, search } = request.query;
+    const { limit, search = "" } = request.query;
     const parsingLimit = parseInt(limit);
 
+    const queryObject = {};
+
+    if (search) {
+      queryObject.name = { $regex: search, $options: "i" };
+    }
+
     const doctorsRes = await doctorsDataModel
-      .find({ name: { $regex: search, $options: "i" } })
+      .find(queryObject)
       .limit(parsingLimit);
 
     return response.status(200).json({ doctors: doctorsRes });
